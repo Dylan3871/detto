@@ -1,8 +1,6 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors
+// ignore_for_file: file_names, prefer_const_constructors_in_immutables, prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, prefer_final_fields, library_private_types_in_public_api, deprecated_member_use
 
 import 'dart:convert';
-
-import 'package:detto/pages/Paginaresultados.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class Paginapreguntas extends StatelessWidget {
