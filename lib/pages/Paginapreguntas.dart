@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors
 
 import 'dart:convert';
 
@@ -37,89 +37,105 @@ class _PreguntasFormState extends State<PreguntasForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        children: [
-          Text(
-            'Preguntas:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          PreguntaWidget(
-            numeroPregunta: 1,
-            pregunta: '¿Cuántos empleados tiene tu empresa?',
-            controller: _pregunta1Controller,
-          ),
-          SizedBox(height: 16),
-          PreguntaWidget(
-            numeroPregunta: 2,
-            pregunta: '¿Cuál es la preferencia de color o diseño para los uniformes?',
-            controller: _pregunta2Controller,
-          ),
-          SizedBox(height: 16),
-          PreguntaWidget(
-            numeroPregunta: 3,
-            pregunta: '¿Necesitas uniformes específicos para diferentes departamentos o roles?',
-            controller: _pregunta3Controller,
-          ),
-          SizedBox(height: 16),
-          PreguntaWidget(
-            numeroPregunta: 4,
-            pregunta: '¿Tienes alguna preferencia en cuanto a la calidad o tipo de tela?',
-            controller: _pregunta4Controller,
-          ),
-          SizedBox(height: 16),
-          PreguntaWidget(
-            numeroPregunta: 5,
-            pregunta: '¿Cuál es tu presupuesto aproximado para los uniformes?',
-            controller: _pregunta5Controller,
-          ),
-          SizedBox(height: 16),
+      child: Container(
+        padding: EdgeInsets.all(16.0), // Agrega padding al Container
+        margin: EdgeInsets.all(16.0), // Agrega margen al Container
+        decoration: BoxDecoration(
+          color: Colors.white, // Cambia el color de fondo del Container
+          borderRadius: BorderRadius.circular(10.0), // Agrega bordes redondeados
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Preguntas:',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            PreguntaWidget(
+              numeroPregunta: 1,
+              pregunta: '¿Cuántos empleados tiene tu empresa?',
+              controller: _pregunta1Controller,
+            ),
+            SizedBox(height: 16),
+            PreguntaWidget(
+              numeroPregunta: 2,
+              pregunta: '¿Cuál es la preferencia de color o diseño para los uniformes?',
+              controller: _pregunta2Controller,
+            ),
+            SizedBox(height: 16),
+            PreguntaWidget(
+              numeroPregunta: 3,
+              pregunta: '¿Necesitas uniformes específicos para diferentes departamentos o roles?',
+              controller: _pregunta3Controller,
+            ),
+            SizedBox(height: 16),
+            PreguntaWidget(
+              numeroPregunta: 4,
+              pregunta: '¿Tienes alguna preferencia en cuanto a la calidad o tipo de tela?',
+              controller: _pregunta4Controller,
+            ),
+            SizedBox(height: 16),
+            PreguntaWidget(
+              numeroPregunta: 5,
+              pregunta: '¿Cuál es tu presupuesto aproximado para los uniformes?',
+              controller: _pregunta5Controller,
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  Map<String, String> respuestasList = {
+                    'Pregunta 1': _pregunta1Controller.text,
+                    'Pregunta 2': _pregunta2Controller.text,
+                    'Pregunta 3': _pregunta3Controller.text,
+                    'Pregunta 4': _pregunta4Controller.text,
+                    'Pregunta 5': _pregunta5Controller.text,
+                  };
 
-          ElevatedButton(
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                // Almacena las respuestas en el mapa
-                Map<String, String> respuestasList = {
-                  'Pregunta 1': _pregunta1Controller.text,
-                  'Pregunta 2': _pregunta2Controller.text,
-                  'Pregunta 3': _pregunta3Controller.text,
-                  'Pregunta 4': _pregunta4Controller.text,
-                  'Pregunta 5': _pregunta5Controller.text,
-                };
+                  await _guardarRespuestasLocalmente(respuestasList);
 
-                await _guardarRespuestasLocalmente(respuestasList);
-
-                // Muestra un mensaje de éxito
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Registro Exitoso'),
-                      content: Text('Respuestas enviadas con éxito.'),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            _limpiarRespuestas(); // Cierra el diálogo
-                            // Puedes agregar más acciones aquí si es necesario
-                          },
-                          child: Text('Aceptar'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(primary: Colors.blue),
-            child: Text('Enviar Respuestas'),
-          ),
-        ],
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Registro Exitoso'),
+                        content: Text('Respuestas enviadas con éxito.'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _limpiarRespuestas();
+                            },
+                            child: Text('Aceptar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: Text('Enviar Respuestas', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // Función para limpiar las respuestas después de enviarlas
   void _limpiarRespuestas() {
     _pregunta1Controller.clear();
     _pregunta2Controller.clear();
