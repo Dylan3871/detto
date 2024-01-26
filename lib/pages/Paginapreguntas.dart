@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields, prefer_const_constructors, use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:detto/pages/Paginaresultados.dart';
@@ -72,6 +74,7 @@ class _PreguntasFormState extends State<PreguntasForm> {
             controller: _pregunta5Controller,
           ),
           SizedBox(height: 16),
+
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
@@ -87,17 +90,24 @@ class _PreguntasFormState extends State<PreguntasForm> {
                 await _guardarRespuestasLocalmente(respuestasList);
 
                 // Muestra un mensaje de éxito
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Respuestas enviadas con éxito'),
-                  ),
-                );
-
-                // Navega a otra pantalla (puedes cambiar 'OtraPantalla' por el nombre de tu pantalla)
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Paginaresultados(),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Registro Exitoso'),
+                      content: Text('Respuestas enviadas con éxito.'),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _limpiarRespuestas(); // Cierra el diálogo
+                            // Puedes agregar más acciones aquí si es necesario
+                          },
+                          child: Text('Aceptar'),
+                        ),
+                      ],
+                    );
+                  },
                 );
               }
             },
@@ -107,6 +117,15 @@ class _PreguntasFormState extends State<PreguntasForm> {
         ],
       ),
     );
+  }
+
+  // Función para limpiar las respuestas después de enviarlas
+  void _limpiarRespuestas() {
+    _pregunta1Controller.clear();
+    _pregunta2Controller.clear();
+    _pregunta3Controller.clear();
+    _pregunta4Controller.clear();
+    _pregunta5Controller.clear();
   }
 }
 Future<void> _guardarRespuestasLocalmente(Map<String, String> respuestasList) async{

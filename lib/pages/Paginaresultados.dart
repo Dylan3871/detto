@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_key_in_widget_constructors
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -10,7 +12,8 @@ class Paginaresultados extends StatelessWidget {
 
     if (respuestasJson != null) {
       final Map<String, dynamic> respuestasMap = json.decode(respuestasJson);
-      final Map<String, String> respuestas = respuestasMap.cast<String, String>();
+      final Map<String, String> respuestas =
+          respuestasMap.cast<String, String>();
       return respuestas;
     } else {
       return {};
@@ -35,13 +38,31 @@ class Paginaresultados extends StatelessWidget {
   }
 
   Widget _construirTablaDeRespuestas(Map<String, String> respuestas) {
-    // Aquí puedes construir tu tabla utilizando los datos de respuestas
-    // Puedes utilizar un paquete de Flutter como 'datatable' o construir tu propia tabla con Column y Row
-    // Ejemplo con DataTable:
-    return DataTable(
+  // Contenedor con borde y sombra
+  return Container(
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey), // Color del borde
+      borderRadius: BorderRadius.circular(10.0), // Radio de la esquina del contenedor
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5), // Color de la sombra
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 2), // Desplazamiento de la sombra
+        ),
+      ],
+    ),
+    // DataTable dentro del contenedor
+    child: DataTable(
+      headingRowColor: MaterialStateColor.resolveWith((states) => Colors.grey),
+      dataRowColor: MaterialStateColor.resolveWith((states) => Colors.white),
       columns: [
-        DataColumn(label: Text('Pregunta')),
-        DataColumn(label: Text('Respuesta')),
+        DataColumn(
+          label: Text('Pregunta', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        DataColumn(
+          label: Text('Respuesta', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
       ],
       rows: respuestas.entries.map((entry) {
         return DataRow(cells: [
@@ -49,6 +70,8 @@ class Paginaresultados extends StatelessWidget {
           DataCell(Text(entry.value)),
         ]);
       }).toList(),
-    );
-  }
+    ),
+  );
+}
+
 }
