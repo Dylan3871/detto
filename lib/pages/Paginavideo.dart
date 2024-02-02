@@ -16,7 +16,7 @@ class _PaginavideoState extends State<Paginavideo> {
   void initState() {
     super.initState();
     // Asegúrate de reemplazar 'URL_DEL_VIDEO' con la URL o la ruta de tu video.
-    _controller = VideoPlayerController.asset('assets/images/Video.mp4')
+    _controller = VideoPlayerController.asset('assets/images/Detto.mp4')
   ..initialize().then((_) {
     setState(() {});
   });
