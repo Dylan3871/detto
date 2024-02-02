@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-//pagina tarjeta
+
 class Paginatarjeta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,14 @@ class Paginatarjeta extends StatelessWidget {
   }
 }
 
-class TarjetaContacto extends StatelessWidget {
+class TarjetaContacto extends StatefulWidget {
+  @override
+  _TarjetaContactoState createState() => _TarjetaContactoState();
+}
+
+class _TarjetaContactoState extends State<TarjetaContacto> {
+  bool qrSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -32,10 +39,15 @@ class TarjetaContacto extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 60.0,
-              backgroundImage: 
-              AssetImage('assets/images/fotografia.png'),
+            SizedBox(
+              height: 80.0,
+            ),
+            Hero(
+              tag: 'avatar',
+              child: CircleAvatar(
+                radius: 80.0,
+                backgroundImage: AssetImage('assets/images/fotografia.png'),
+              ),
             ),
             SizedBox(height: 16.0),
             Text(
@@ -53,17 +65,35 @@ class TarjetaContacto extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.0),
-            Image.asset(
-                'assets/images/codigoqr.png', 
-                height: 100.0,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  qrSelected = !qrSelected;
+                });
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Hero(
+                    tag: 'qr',
+                    child: Image.asset(
+                      'assets/images/codigoqr.png',
+                      height: qrSelected ? 200.0 : 120.0,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
           ],
         ),
       ),
     );
   }
 }
+
+
+
 
 class IconEnlace extends StatelessWidget {
   final IconData icono;
