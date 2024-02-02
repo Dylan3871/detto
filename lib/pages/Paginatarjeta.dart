@@ -35,7 +35,7 @@ class TarjetaContacto extends StatelessWidget {
             CircleAvatar(
               radius: 60.0,
               backgroundImage: 
-              AssetImage('assets/images/leonel.jpg'), // Reemplaza con la ruta de tu imagen
+              AssetImage('assets/images/fotografia.png'),
             ),
             SizedBox(height: 16.0),
             Text(
@@ -54,7 +54,7 @@ class TarjetaContacto extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             Image.asset(
-                'assets/images/qr.png', // Reemplaza con la ruta de tu código QR
+                'assets/images/codigoqr.png', 
                 height: 100.0,
             ),
             SizedBox(height: 16.0),
@@ -79,8 +79,6 @@ class IconEnlace extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Puedes abrir el enlace en una aplicación externa o realizar otra acción según tus necesidades
-        // Ejemplo de apertura de enlace en navegador:
-        // launch(enlace);
       },
       child: CircleAvatar(
         radius: 20.0,
