@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-
 
 class Paginatarjeta extends StatelessWidget {
   @override
@@ -31,37 +30,44 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5.0,
+      elevation: 8.0, // Agregamos un sombreado más pronunciado
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             SizedBox(
-              height: 80.0,
+              height: 60.0,
             ),
-            Hero(
-              tag: 'avatar',
-              child: CircleAvatar(
-                radius: 80.0,
-                backgroundImage: AssetImage('assets/images/fotografia.png'),
+            CircleAvatar(
+              radius: 80.0,
+              backgroundImage: AssetImage('assets/images/fotografia.png'),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/detto.png',
+                width: 80.0,
+                height: 80.0,
+              ),
+            ),
+            SizedBox(height: 2.0),
+            Text(
+              'Ing. Victor V. Álvarez',
+              style: TextStyle(
+                fontSize: 20.0, // Fuente un poco más grande
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 16.0),
             Text(
-              'Ing. Victor',
+              'Gerente Comercial at Detto',
               style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Gerente de DETTO UNIFORMES',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey,
+                fontSize: 20.0, // Fuente un poco más grande
+                color: Colors.black, // Color de texto más oscuro
               ),
             ),
             SizedBox(height: 16.0),
@@ -78,7 +84,7 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
                     tag: 'qr',
                     child: Image.asset(
                       'assets/images/codigoqr.png',
-                      height: qrSelected ? 200.0 : 120.0,
+                      height: qrSelected ? 200.0 : 120.0, // Ajuste de tamaño
                     ),
                   ),
                 ],
@@ -92,32 +98,3 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
   }
 }
 
-
-
-
-class IconEnlace extends StatelessWidget {
-  final IconData icono;
-  final String enlace;
-
-  IconEnlace({
-    required this.icono,
-    required this.enlace,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Puedes abrir el enlace en una aplicación externa o realizar otra acción según tus necesidades
-      },
-      child: CircleAvatar(
-        radius: 20.0,
-        backgroundColor: Color.fromARGB(255, 155, 29, 36),
-        child: Icon(
-          icono,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}

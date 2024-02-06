@@ -67,6 +67,7 @@ flutter:
       - assets/images/fotografia.png
       - assets/images/codigoqr.png
       - assets/images/Detto.mp4
+      - assets/images/detto.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
