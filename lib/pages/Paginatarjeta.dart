@@ -1,6 +1,28 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
+
+class PantallaQR extends StatelessWidget {
+  final String imagePath;
+
+  PantallaQR({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('QR para mas información'),
+      ),
+      body: Center(
+        child: Hero(
+          tag: 'qr',
+          child: Image.asset(
+            imagePath,
+            height: 200.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class Paginatarjeta extends StatelessWidget {
   @override
@@ -30,9 +52,9 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8.0, // Agregamos un sombreado más pronunciado
+      elevation: 8.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+        borderRadius: BorderRadius.circular(15.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,7 +80,7 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
             Text(
               'Ing. Victor V. Álvarez',
               style: TextStyle(
-                fontSize: 20.0, // Fuente un poco más grande
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -66,16 +88,19 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
             Text(
               'Gerente Comercial at Detto',
               style: TextStyle(
-                fontSize: 20.0, // Fuente un poco más grande
-                color: Colors.black, // Color de texto más oscuro
+                fontSize: 20.0,
+                color: Colors.black,
               ),
             ),
             SizedBox(height: 16.0),
             GestureDetector(
               onTap: () {
-                setState(() {
-                  qrSelected = !qrSelected;
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PantallaQR(imagePath: 'assets/images/codigoqr.png'),
+                  ),
+                );
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -84,7 +109,7 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
                     tag: 'qr',
                     child: Image.asset(
                       'assets/images/codigoqr.png',
-                      height: qrSelected ? 200.0 : 120.0, // Ajuste de tamaño
+                      height: qrSelected ? 200.0 : 120.0,
                     ),
                   ),
                 ],
@@ -98,3 +123,8 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
   }
 }
 
+void main() {
+  runApp(MaterialApp(
+    home: Paginatarjeta(),
+  ));
+}
