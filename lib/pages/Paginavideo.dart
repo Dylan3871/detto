@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 class Paginavideo extends StatefulWidget {
   @override
@@ -11,16 +12,23 @@ class Paginavideo extends StatefulWidget {
 
 class _PaginavideoState extends State<Paginavideo> {
   late VideoPlayerController _controller;
+  late ChewieController _chewieController;
+  bool _isFullScreen = false;
 
   @override
   void initState() {
     super.initState();
-    // Asegúrate de reemplazar 'URL_DEL_VIDEO' con la URL o la ruta de tu video.
     _controller = VideoPlayerController.asset('assets/images/Detto.mp4')
-  ..initialize().then((_) {
-    setState(() {});
-  });
+      ..initialize().then((_) {
+        setState(() {});
+      });
 
+    _chewieController = ChewieController(
+      videoPlayerController: _controller,
+      aspectRatio: 16 / 9,
+      autoInitialize: true,
+      looping: true,
+    );
   }
 
   @override
@@ -29,35 +37,24 @@ class _PaginavideoState extends State<Paginavideo> {
       appBar: AppBar(
         title: Text('Video'),
       ),
-      body: Center(
-        child: _controller.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-            : CircularProgressIndicator(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            // Puedes manejar la lógica de reproducción/pausa del video aquí
-            if (_controller.value.isPlaying) {
-              _controller.pause();
-            } else {
-              _controller.play();
-            }
-          });
-        },
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: _controller.value.isInitialized
+                ? Chewie(
+                    controller: _chewieController,
+                  )
+                : CircularProgressIndicator(),
+          ),
+        ],
       ),
     );
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _chewieController.dispose();
     _controller.dispose();
+    super.dispose();
   }
 }
