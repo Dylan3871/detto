@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, file_names, deprecated_member_use
+
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:detto/database/database_helper.dart';

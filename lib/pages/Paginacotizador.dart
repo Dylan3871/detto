@@ -1,3 +1,6 @@
+// ignore: file_names
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, file_names, duplicate_ignore
+
 import 'package:flutter/material.dart';
 //pagina cotizador
 class Paginacotizador extends StatelessWidget{
