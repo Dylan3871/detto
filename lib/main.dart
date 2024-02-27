@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
+
 import 'package:detto/database/database_helper.dart';
 import 'package:detto/pages/Paginatarjeta.dart';
 import 'package:detto/pages/Paginadetto.dart';
