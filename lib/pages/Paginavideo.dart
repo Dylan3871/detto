@@ -13,6 +13,7 @@ class Paginavideo extends StatefulWidget {
 class _PaginavideoState extends State<Paginavideo> {
   late VideoPlayerController _controller;
   late ChewieController _chewieController;
+  // ignore: unused_field
   bool _isFullScreen = false;
 
   @override

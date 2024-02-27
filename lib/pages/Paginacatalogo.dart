@@ -584,4 +584,5 @@ class FullScreenVideoPlayer extends StatelessWidget {
       ),
     );
   }
+  
 }

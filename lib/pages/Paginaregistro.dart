@@ -106,6 +106,7 @@ class CatalogoDao {
     return materialesSet.toList();
   }
 
+
 Future<List<String>> getAllGenero() async {
   final List<Map<String, dynamic>> productos = await database.query('catalogo');
   final Set<String> generoSet = Set<String>();
