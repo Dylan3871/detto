@@ -6,6 +6,7 @@ import 'package:detto/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+
 class UsuariosModel {
   final int id;
   final String name;

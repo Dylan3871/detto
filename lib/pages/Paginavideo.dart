@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors, depend_on_referenced_packages, duplicate_ignore, prefer_final_fields, unused_field, file_names
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -13,6 +13,7 @@ class Paginavideo extends StatefulWidget {
 class _PaginavideoState extends State<Paginavideo> {
   late VideoPlayerController _controller;
   late ChewieController _chewieController;
+  // ignore: unused_field
   bool _isFullScreen = false;
 
   @override
