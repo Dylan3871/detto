@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors, prefer_final_fields, unused_field
 
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages

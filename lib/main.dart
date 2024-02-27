@@ -7,9 +7,11 @@ import 'package:detto/pages/Paginacatalogo.dart';
 import 'package:detto/pages/Paginacotizador.dart';
 import 'package:detto/pages/Paginaresultados.dart';
 import 'package:detto/pages/Paginausuarios.dart';
+import 'package:detto/pages/Paginaregistro.dart';
 import 'package:flutter/material.dart';
 //import 'package:detto/database/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class _MyAppState extends State<MyApp> {
     Paginacotizador(),
     Paginaresultados(),
     Paginausuarios(),
+    Paginaregistro(),
   ];
 
   @override
@@ -68,6 +71,7 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(icon: Icon(Icons.find_in_page), label: "Cotizador"),
             BottomNavigationBarItem(icon: Icon(Icons.grading), label: "Resultados"),
             BottomNavigationBarItem(icon: Icon(Icons.supervised_user_circle), label: "Usuarios"),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: "Registro"),
           ],
         ),
       ),
