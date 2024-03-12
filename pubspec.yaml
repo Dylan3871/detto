@@ -69,6 +69,14 @@ flutter:
       - assets/images/codigoqr.png
       - assets/images/Detto.mp4
       - assets/images/detto.png
+      - assets/images/cli1.png
+      - assets/images/cli2.png
+      - assets/images/cli3.png
+      - assets/images/cli4.png
+      - assets/images/cli5.png
+      - assets/images/cli6.png
+      - assets/images/cli7.png
+      - assets/images/cli8.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
