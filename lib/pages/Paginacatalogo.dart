@@ -1,11 +1,11 @@
 import 'dart:io';
-// ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:detto/models/catalogo_model.dart';
 import 'package:detto/database/catalogo_dao.dart';
 import 'package:detto/database/database_helper.dart';
+import 'package:detto/database/favorito_dao.dart';
 import 'package:video_player/video_player.dart';
+import 'package:detto/models/favorito_model.dart';
 
 class Paginacatalogo extends StatefulWidget {
   @override
@@ -14,6 +14,7 @@ class Paginacatalogo extends StatefulWidget {
 
 class _PaginaCatalogoState extends State<Paginacatalogo> {
   late CatalogoDao _catalogoDao;
+  late FavoritoDao _favoritoDao;
   late Future<List<CatalogoItem>> _productsFuture;
   List<CatalogoItem> _products = [];
   List<String> _filterOptions = [
@@ -42,7 +43,9 @@ class _PaginaCatalogoState extends State<Paginacatalogo> {
 
   Future<void> _initializeDatabase() async {
     _catalogoDao = CatalogoDao(await DatabaseHelper.instance.db);
+    _favoritoDao = FavoritoDao(await DatabaseHelper.instance.db);
     await _catalogoDao.initDatabase();
+    await _favoritoDao.initDatabase();
     _productsFuture = _catalogoDao.readAll();
     _productsFuture.then((products) {
       setState(() {
@@ -280,20 +283,54 @@ class _PaginaCatalogoState extends State<Paginacatalogo> {
                       ),
                     );
                   },
+                  onToggleFavorite: () {
+                    _toggleFavorite(product.id!);
+                  },
                 );
               },
             ),
     );
   }
+void _toggleFavorite(int productId) async {
+  bool? isFavorite = await _favoritoDao.isFavorite(productId);
+  if (isFavorite != null) {
+    if (isFavorite) {
+      await _favoritoDao.removeFromFavorites(productId);
+    } else {
+      // Obtener el producto correspondiente a productId
+      final product = _products.firstWhere((element) => element.id == productId);
+
+      // Crear un objeto Favorito con la información del producto
+      final favorito = Favorito(
+        fotos: product.fotos!,
+        nombrePrenda: product.nombrePrenda!,
+        costoini: product.costoini!,
+        codigod: product.codigod!,
+      );
+
+      // Agregar el producto a la tabla favorito
+      await _favoritoDao.addToFavorites(favorito);
+    }
+    setState(() {
+      // Actualizar el estado para reflejar el cambio en favoritos
+    });
+  } else {
+    // Manejar el caso en que el valor devuelto sea nulo
+    // Por ejemplo, mostrar un mensaje de error o tomar otra acción
+  }
+}
+
 }
 
 class ProductCard extends StatelessWidget {
   final CatalogoItem product;
   final Function onTap;
+  final Function onToggleFavorite;
 
   const ProductCard({
     required this.product,
     required this.onTap,
+    required this.onToggleFavorite,
   });
 
   @override
@@ -308,13 +345,25 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
-              child: Image.file(
-                File(product.fotos ?? ''),
-                fit: BoxFit.cover,
-                height: 150,
-              ),
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+                  child: Image.file(
+                    File(product.fotos ?? ''),
+                    fit: BoxFit.cover,
+                    height: 150,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Colors.red, // Cambié el color del ícono a rojo por defecto
+                  ),
+                  onPressed: () => onToggleFavorite(),
+                ),
+              ],
             ),
             Container(
               padding: EdgeInsets.all(12.0),
@@ -413,6 +462,8 @@ class ProductDetailPage extends StatelessWidget {
                   _buildDetailItem('Género:', product.genero ?? ''),
                   _buildDetailItem('Campo:', product.campo ?? ''),
                   _buildDetailItem('Descripción:', product.descripcion ?? ''),
+                  _buildDetailItem('Costo Inicial:', product.costoini.toString()), // Mostrar costo inicial
+                  _buildDetailItem('Código:', product.codigod.toString()), // Mostrar código
                 ],
               ),
             ),
@@ -584,5 +635,4 @@ class FullScreenVideoPlayer extends StatelessWidget {
       ),
     );
   }
-  
 }

@@ -123,7 +123,7 @@ class _PreguntasFormState extends State<PreguntasForm> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
+                backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               child: Text('Enviar Respuestas', style: TextStyle(fontSize: 18)),

@@ -18,19 +18,17 @@ class CatalogoDao {
   }
 
   Future<int> insert(CatalogoItem item) async {
-    // Obtener el último ID utilizado
-    int lastId = Sqflite.firstIntValue(await _db.rawQuery('SELECT MAX(id) FROM catalogo')) ?? 0;
-
-    // Incrementar el ID para el nuevo elemento
-    int newId = lastId + 1;
-    item = item.copyWith(id: newId);
-
     // Insertar el nuevo elemento en el catálogo
     return await _db.insert('catalogo', item.toMap());
   }
 
   Future<void> update(CatalogoItem item) async {
-    await _db.update('catalogo', item.toMap(), where: 'id = ?', whereArgs: [item.id]);
+    await _db.update(
+      'catalogo',
+      item.toMap(),
+      where: 'id = ?',
+      whereArgs: [item.id],
+    );
   }
 
   Future<void> delete(CatalogoItem item) async {

@@ -9,21 +9,26 @@ class CatalogoDao {
   final database = DatabaseHelper.instance.db;
 
   Future<void> createTable() async {
-    await database.execute('''
-      CREATE TABLE IF NOT EXISTS catalogo (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombrePrenda TEXT,
-        fotos TEXT,
-        tallas TEXT,
-        material TEXT,
-        colores TEXT,
-        video TEXT,
-        genero TEXT,
-        campo TEXT,
-        descripcion TEXT
-      )
-    ''');
-  }
+  await database.execute('''
+    CREATE TABLE IF NOT EXISTS catalogo (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombrePrenda TEXT,
+  fotos TEXT,
+  tallas TEXT,
+  material TEXT,
+  colores TEXT,
+  video TEXT,
+  genero TEXT,
+  campo TEXT,
+  descripcion TEXT,
+  costoini INTEGER, // Añade esta línea para la nueva columna
+  codigod TEXT
+)
+
+    )
+  ''');
+}
+
 
   Future<int> insert(Map<String, dynamic> producto) async {
     int lastId = Sqflite.firstIntValue(await database.rawQuery('SELECT MAX(id) FROM catalogo')) ?? 0;
@@ -106,26 +111,22 @@ class CatalogoDao {
     return materialesSet.toList();
   }
 
+  Future<List<String>> getAllGenero() async {
+    final List<Map<String, dynamic>> productos = await database.query('catalogo');
+    final Set<String> generoSet = Set<String>();
 
-Future<List<String>> getAllGenero() async {
-  final List<Map<String, dynamic>> productos = await database.query('catalogo');
-  final Set<String> generoSet = Set<String>();
-
-  for (final producto in productos) {
-    final String? genero = producto['genero'];
-    if (genero != null && genero.isNotEmpty) {
-      generoSet.add(genero);
+    for (final producto in productos) {
+      final String? genero = producto['genero'];
+      if (genero != null && genero.isNotEmpty) {
+        generoSet.add(genero);
+      }
     }
+
+    List<String> generos = generoSet.toList();
+    generos.sort();
+
+    return generos;
   }
-
-  // Convertir el conjunto de géneros a una lista y ordenarla alfabéticamente
-  List<String> generos = generoSet.toList();
-  generos.sort();
-  
-  return generos;
-}
-
-
 
   Future<List<String>> getAllCampo() async {
     final List<Map<String, dynamic>> productos = await database.query('catalogo');
@@ -158,6 +159,8 @@ class _PaginaRegistroState extends State<Paginaregistro> {
   final _generoController = TextEditingController();
   final _campoController = TextEditingController();
   final _descripcionController = TextEditingController();
+  final _costoInicialController = TextEditingController();
+  final _codigoController = TextEditingController();
 
   List<XFile>? _imagenesProducto = [];
   XFile? _videoFile;
@@ -225,8 +228,7 @@ class _PaginaRegistroState extends State<Paginaregistro> {
         hintColor: Colors.redAccent,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            primary: Colors.redAccent,
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: Colors.redAccent,
           ),
         ),
       ),
@@ -308,6 +310,31 @@ class _PaginaRegistroState extends State<Paginaregistro> {
                               return null;
                             },
                           ),
+                          TextFormField(
+                            controller: _costoInicialController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Costo Inicial',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, ingrese el costo inicial';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: _codigoController,
+                            decoration: InputDecoration(
+                              labelText: 'Código',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, ingrese un código';
+                              }
+                              return null;
+                            },
+                          ),
                           ElevatedButton(
                             onPressed: () {
                               _seleccionarImagenesProducto();
@@ -381,6 +408,8 @@ class _PaginaRegistroState extends State<Paginaregistro> {
                                       _generoController.text = producto['genero'];
                                       _campoController.text = producto['campo'];
                                       _descripcionController.text = producto['descripcion'];
+                                      _costoInicialController.text = producto['costoini'].toString();
+                                      _codigoController.text = producto['codigod'];
                                       // No olvides configurar el controlador de video si el producto tiene un video asociado
                                       setState(() {});
                                     },
@@ -577,29 +606,48 @@ class _PaginaRegistroState extends State<Paginaregistro> {
       final genero = _generoController.text;
       final campo = _campoController.text;
       final descripcion = _descripcionController.text;
+      final costoini = double.parse(_costoInicialController.text);
+      final codigod = _codigoController.text;
 
-      Map<String, dynamic> producto = {
+      final producto = {
         'nombrePrenda': nombrePrenda,
+        'fotos': _imagenesProducto!.map((imagen) => imagen.path).join(','),
         'tallas': tallas,
         'material': material,
         'colores': colores,
+        'video': _videoFile!.path,
         'genero': genero,
         'campo': campo,
         'descripcion': descripcion,
-        'fotos': _imagenesProducto!.map((imagen) => imagen.path).join(','),
-        'video': _videoFile!.path,
+        'costoini': costoini,
+        'codigod': codigod,
       };
 
-      _guardarProductoEnBaseDeDatos(producto);
+      dao.insert(producto);
+
+      setState(() {
+        _nombrePrendaController.clear();
+        _tallasController.clear();
+        _materialController.clear();
+        _coloresController.clear();
+        _generoController.clear();
+        _campoController.clear();
+        _descripcionController.clear();
+        _costoInicialController.clear();
+        _codigoController.clear();
+        _imagenesProducto = [];
+        _videoFile = null;
+        _videoController!.dispose();
+        _videoController = null;
+        _mostrarFormularioRegistro = false;
+      });
     }
-  }
-
-  void _guardarProductoEnBaseDeDatos(Map<String, dynamic> producto) async {
-    await dao.insert(producto);
-
-    setState(() {
-      _mostrarFormularioRegistro = false;
-    });
   }
 }
 
+void main() async {
+  final dao = CatalogoDao();
+  await dao.createTable();
+
+  runApp(Paginaregistro());
+}

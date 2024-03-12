@@ -142,8 +142,7 @@ class _PaginaUsuariosState extends State<Paginausuarios> {
         hintColor: Colors.redAccent,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            primary: Colors.redAccent,
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: Colors.redAccent,
           ),
         ),
       ),
