@@ -9,6 +9,8 @@ class CatalogoItem {
   String? genero;
   String? campo;
   String? descripcion;
+  int? costoini; // Cambiado a int
+  String? codigod; // Cambiado a int
 
   CatalogoItem({
     this.id,
@@ -21,11 +23,17 @@ class CatalogoItem {
     this.genero,
     this.campo,
     this.descripcion,
+    this.costoini,
+    this.codigod,
   });
 
   get otroCampo => null;
 
   get algunCampo => null;
+
+  get isSelected => null;
+
+  get isFavorite => null;
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,6 +47,8 @@ class CatalogoItem {
       'genero': genero,
       'campo': campo,
       'descripcion': descripcion,
+      'costoini': costoini,
+      'codigod': codigod,
     };
   }
 
@@ -54,6 +64,8 @@ class CatalogoItem {
       genero: map['genero'],
       campo: map['campo'],
       descripcion: map['descripcion'],
+      costoini: map['costoini'],
+      codigod: map['codigod'],
     );
   }
 
@@ -68,6 +80,8 @@ class CatalogoItem {
     String? genero,
     String? campo,
     String? descripcion,
+    int? costoini,
+    String? codigod,
   }) {
     return CatalogoItem(
       id: id ?? this.id,
@@ -80,8 +94,12 @@ class CatalogoItem {
       genero: genero ?? this.genero,
       campo: campo ?? this.campo,
       descripcion: descripcion ?? this.descripcion,
+      costoini: costoini ?? this.costoini,
+      codigod: codigod ?? this.codigod,
     );
   }
 
   getValueForFilter(String option) {}
+
+  void toggleSelected() {}
 }
