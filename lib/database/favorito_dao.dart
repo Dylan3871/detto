@@ -100,4 +100,8 @@ class FavoritoDao {
   }
 
   insertFavoriteProduct(SelectedProduct selectedProduct) {}
+
+  insertCotizacion(cotizacion) {}
+
+  insertProduct(Map<String, dynamic> productMap) {}
 }
