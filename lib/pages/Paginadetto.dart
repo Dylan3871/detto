@@ -10,79 +10,112 @@ class Paginadetto extends StatelessWidget {
     "assets/images/cli4.png",
     "assets/images/cli5.png",
     "assets/images/cli6.png",
-
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        alignment: Alignment.centerLeft,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Acerca de nosotros'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Detto",
-              style: TextStyle(fontSize: 30),
+              "",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 15),
-            _buildTextContainer(
+            SizedBox(height: 40),
+            _buildInfoCard(
+              context,
               "Bienvenido a Detto, donde conocerás más acerca de nosotros. Esta es nuestra información relevante acerca de nosotros.",
             ),
-            SizedBox(height: 15),
-            _buildTextContainer(
+            SizedBox(height: 40),
+            _buildInfoCard(
+              context,
               "Misión: Ser la empresa elegida por el cliente por el uso de modas y tendencias en uniformes empresariales y escolares para contribuir a sus necesidades.",
             ),
-            SizedBox(height: 15),
-            _buildTextContainer(
+            SizedBox(height: 40),
+            _buildInfoCard(
+              context,
               "Visión: Ser la empresa elegida por el cliente por el uso de modas y tendencias en uniformes empresariales y escolares para contribuir a sus necesidades.",
             ),
-            SizedBox(height: 15),
-            _buildTextContainer(
+            SizedBox(height: 40),
+            _buildInfoCard(
+              context,
               "NUESTROS PRINCIPALES CLIENTES",
             ),
-            SizedBox(height: 15),
-            _buildImageCarousel(),
+            SizedBox(height: 80),
+            _buildCarouselCard(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextContainer(String text) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 188, 75, 75)),
+  Widget _buildInfoCard(BuildContext context, String text) {
+  return Card(
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        alignment: Alignment.center, // Centra el contenido
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    ),
+  );
+}
+
+
+  Widget _buildCarouselCard(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 18),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildImageCarousel() {
-    return Container(
-      height: 250, // Ajusta la altura según tus necesidades
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: imagenes.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Image.asset(
-              imagenes[index],
-              width: 160, // Ajusta el ancho según tus necesidades
-              height: 240, // Ajusta la altura según tus necesidades
-              fit: BoxFit.cover,
-            ),
-          );
-        },
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Container(
+          height: 250,
+          width: double.infinity,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: imagenes.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    imagenes[index],
+                    width: 260,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 }
+
+void main() {
+  runApp(MaterialApp(
+    home: Paginadetto(),
+  ));
+}
+
