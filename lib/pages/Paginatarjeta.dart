@@ -18,7 +18,7 @@ class PantallaQR extends StatelessWidget {
           tag: 'qr',
           child: Image.asset(
             imagePath,
-            height: 200.0,
+            height: 300.0,
           ),
         ),
       ),
@@ -35,7 +35,7 @@ class Paginatarjeta extends StatelessWidget {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: TarjetaContacto(),
         ),
       ),
@@ -56,17 +56,17 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
     return Card(
       elevation: 8.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(45.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(40.0),
         child: Column(
           children: [
             SizedBox(
-              height: 60.0,
+              height: 90.0,
             ),
             CircleAvatar(
-              radius: 80.0,
+              radius: 120.0,
               backgroundImage: AssetImage('assets/images/fotografia.png'),
             ),
             Positioned(
@@ -82,7 +82,7 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
             Text(
               'Ing. Victor V. Álvarez',
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 30.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -90,7 +90,7 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
             Text(
               'Gerente Comercial at Detto',
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 30.0,
                 color: Colors.black,
               ),
             ),
@@ -111,13 +111,13 @@ class _TarjetaContactoState extends State<TarjetaContacto> {
                     tag: 'qr',
                     child: Image.asset(
                       'assets/images/codigoqr.png',
-                      height: qrSelected ? 200.0 : 120.0,
+                      height: qrSelected ? 400.0 : 200.0,
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 80.0),
           ],
         ),
       ),
