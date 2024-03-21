@@ -120,33 +120,7 @@ class DatabaseHelper {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 34) {
-     await db.execute('''
-      CREATE TABLE cotizador(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        empresa TEXT,
-        contacto TEXT,
-        correo TEXT,
-        telefono TEXT,
-        fechaaut TEXT,
-        fechavig TEXT,
-        nombreCliente TEXT,
-        nombrePrenda TEXT,
-        fotos TEXT,
-        margenPre REAL,
-        costo REAL,
-        piezas INTEGER,
-        comentario TEXT,
-        descuentoP REAL,
-        totalP REAL,
-        comentarioF TEXT,
-        fotosF TEXT,
-        subtotal REAL,
-        descuentoG REAL,
-        iva REAL,
-        totalF REAL,
-        concdicioncom TEXT
-      )
-    ''');
+     
       // Agregar la lógica de actualización de la base de datos aquí
     }
   }

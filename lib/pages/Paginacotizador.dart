@@ -156,14 +156,14 @@ class _PaginacotizadorState extends State<Paginacotizador> {
             cellAlignment: pdfLib.Alignment.center,
             data: <List<dynamic>>[
               [
+                'Código',
                 'Nombre Prenda',
                 'Foto Prenda',
-                'Código',
                 'Costo Ini',
                 'Piezas',
-                'Comentario',
-                'Descuento',
                 'Margen de Ganancia',
+                 'Descuento',
+                'Comentario',
                 'Total'
               ],
               ...selectedProducts.map((product) => [
@@ -316,116 +316,201 @@ class _PaginacotizadorState extends State<Paginacotizador> {
                             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           ),
                         ),
+                        //aqui ajustamos la tabla como se muestra en al app
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            columns: [
-                              DataColumn(label: Text('Nombre Prenda')),
-                              DataColumn(label: Text('Foto Prenda')),
-                              DataColumn(label: Text('Código')), // Nueva columna para el código
-                              DataColumn(label: Text('Costo Ini')),
-                              DataColumn(label: Text('Piezas')),
-                              DataColumn(label: Text('Comentario')),
-                              DataColumn(label: Text('Descuento')),
-                              DataColumn(label: Text('Margen de Ganancia')), // Nueva columna para el margen de ganancia
-                              DataColumn(label: Text('Total')),
-                              DataColumn(label: Text('Eliminar')),
-                            ],
-                            rows: List<DataRow>.generate(selectedProducts.length, (index) {
-                              final product = selectedProducts[index];
-                              return DataRow(cells: [
-                                DataCell(
-                                  Text(product.product.nombrePrenda),
-                                ),
-                                DataCell(
-                                  SizedBox(
-                                    width: 100, // Ajusta el ancho de la imagen según sea necesario
-                                    height: 100, // Ajusta el alto de la imagen según sea necesario
-                                    child: Image.file(File(product.product.fotos)),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(product.codigod), // Mostrar el código del producto
-                                ),
-                                DataCell(
-                                  TextField(
-                                    onChanged: (value) {
-                                      if (value.isNotEmpty) {
-                                        product.costoini = double.parse(value);
-                                      } else {
-                                        product.costoini = 0.0;
-                                      }
-                                      _calculateTotalPrice();
-                                    },
-                                    controller: TextEditingController(text: product.costoini == 0.0 ? '' : product.costoini.toStringAsFixed(2)),
-                                  ),
-                                ),
-                                DataCell(
-                                  TextField(
-                                    onChanged: (value) {
-                                      if (value.isNotEmpty) {
-                                        product.pieces = int.parse(value);
-                                      } else {
-                                        product.pieces = 0;
-                                      }
-                                      _calculateTotalPrice();
-                                    },
-                                    controller: TextEditingController(text: product.pieces == 0 ? '' : product.pieces.toString()),
-                                  ),
-                                ),
-                                DataCell(
-                                  TextField(
-                                    onChanged: (value) {
-                                      product.comment = value.isNotEmpty ? value : '';
-                                    },
-                                    controller: TextEditingController(text: product.comment),
-                                  ),
-                                ),
-                                DataCell(
-                                  TextField(
-                                    onChanged: (value) {
-                                      if (value.isNotEmpty) {
-                                        product.discount = double.parse(value);
-                                      } else {
-                                        product.discount = 0.0;
-                                      }
-                                      _calculateTotalPrice();
-                                    },
-                                    controller: TextEditingController(text: product.discount == 0.0 ? '' : product.discount.toString()),
-                                  ),
-                                ),
-                                DataCell(
-                                  DropdownButton<double>(
-                                    value: product.margin == 0.0 ? _margins.first : product.margin,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        product.margin = newValue!;
-                                      });
-                                      _calculateTotalPrice();
-                                    },
-                                    items: _margins.map((margin) {
-                                      return DropdownMenuItem<double>(
-                                        value: margin,
-                                        child: Text('$margin%'),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(_calculateTotal(product).toStringAsFixed(2)),
-                                ),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () async {
-                                      await _removeFromCart(product);
-                                    },
-                                  ),
-                                ),
-                              ]);
-                            }),
-                          ),
+                          //aqui se mueve para añadir columnas tablas o modificar logica de la tabla que se muestra en la app
+                     child: DataTable(
+  columns: [
+    DataColumn(label: Text('Código')), 
+    DataColumn(label: Text('Nombre Prenda')),
+    DataColumn(label: Text('Foto Prenda')),
+    DataColumn(label: Text('Costo')),
+    DataColumn(label: Text('Piezas')),
+    DataColumn(label: Text('Margen de Ganancia')), 
+    DataColumn(label: Text('Descuento')),
+    DataColumn(label: Text('Comentario')),
+    DataColumn(label: Text('Total')),
+    DataColumn(label: Text('Eliminar')),
+  ],
+  rows: List<DataRow>.generate(selectedProducts.length, (index) {
+    final product = selectedProducts[index];
+    return DataRow(cells: [
+      DataCell(
+        Text(product.codigod),
+      ),
+      DataCell(
+        Text(product.product.nombrePrenda),
+      ),
+      DataCell(
+        SizedBox(
+          width: 100, // Ancho de la imagen
+          height: 100, // Alto de la imagen
+          child: Image.file(File(product.product.fotos)),
+        ),
+      ),
+      DataCell(
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  product.costoini = (product.costoini - 1).clamp(0, double.infinity);
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+            SizedBox(
+              width: 70,
+              child: TextFormField(
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  setState(() {
+                    product.costoini = double.tryParse(value) ?? 0.0;
+                    _calculateTotalPrice();
+                  });
+                },
+                controller: TextEditingController(text: product.costoini.toStringAsFixed(2)),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  product.costoini += 1;
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      DataCell(
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  product.pieces = (product.pieces - 1).clamp(0, double.infinity).toInt();
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+            SizedBox(
+              width: 70,
+              child: TextFormField(
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  setState(() {
+                    product.pieces = int.tryParse(value) ?? 0;
+                    _calculateTotalPrice();
+                  });
+                },
+                controller: TextEditingController(text: product.pieces.toString()),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  product.pieces += 1;
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      DataCell(
+        DropdownButton<double>(
+          value: product.margin == 0.0 ? _margins.first : product.margin,
+          onChanged: (newValue) {
+            setState(() {
+              product.margin = newValue!;
+              _calculateTotalPrice();
+            });
+          },
+          items: _margins.map((margin) {
+            return DropdownMenuItem<double>(
+              value: margin,
+              child: Text('$margin%'),
+            );
+          }).toList(),
+        ),
+      ),
+      DataCell(
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  product.discount = (product.discount - 1).clamp(0, double.infinity);
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+            SizedBox(
+              width: 70,
+              child: TextFormField(
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  setState(() {
+                    product.discount = double.tryParse(value) ?? 0.0;
+                    _calculateTotalPrice();
+                  });
+                },
+                controller: TextEditingController(text: product.discount.toStringAsFixed(2)),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  product.discount += 1;
+                  _calculateTotalPrice();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      DataCell(
+        TextFormField(
+          onChanged: (value) {
+            setState(() {
+              product.comment = value;
+            });
+          },
+          controller: TextEditingController(text: product.comment),
+        ),
+      ),
+      DataCell(
+        Text(_calculateTotal(product).toStringAsFixed(2)),
+      ),
+      DataCell(
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+            await _removeFromCart(product);
+          },
+        ),
+      ),
+    ]);
+  }),
+),
+
+
+
                         ),
+                        //aqui termina donde se modifca la logica y orden de tabla 
+
+                        
                         Text('Total: ${_totalPrice.toStringAsFixed(2)}'),
                       ],
                     ),

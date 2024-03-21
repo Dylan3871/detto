@@ -7,6 +7,7 @@ class UsuariosDao {
 
   Future<List<UsuariosModel>> readAll() async {
     final data = await database.query('usuarios');
+    print('Usuarios en la base de datos: $data');
     return data.map((e) => UsuariosModel.fromMap(e)).toList();
   }
 
@@ -31,6 +32,19 @@ class UsuariosDao {
 
     if (result.isNotEmpty) {
       return UsuariosModel.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<UsuariosModel?> getCurrentUser() async {
+    final List<Map<String, dynamic>> result = await database.query('usuarios');
+    print('Resultado de la consulta para obtener el usuario actual: $result');
+
+    if (result.isNotEmpty) {
+      final usuarioActual = UsuariosModel.fromMap(result.first);
+      print('Usuario actual: $usuarioActual');
+      return usuarioActual;
     } else {
       return null;
     }
