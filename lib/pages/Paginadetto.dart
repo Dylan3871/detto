@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
 
@@ -10,8 +10,7 @@ class Paginadetto extends StatelessWidget {
     "assets/images/cli4.png",
     "assets/images/cli5.png",
     "assets/images/cli6.png",
-    "assets/images/cli7.png",
-    "assets/images/cli8.png",
+
   ];
 
   @override
@@ -68,7 +67,7 @@ class Paginadetto extends StatelessWidget {
 
   Widget _buildImageCarousel() {
     return Container(
-      height: 200, // Ajusta la altura según tus necesidades
+      height: 250, // Ajusta la altura según tus necesidades
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: imagenes.length,
@@ -77,8 +76,8 @@ class Paginadetto extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Image.asset(
               imagenes[index],
-              width: 130, // Ajusta el ancho según tus necesidades
-              height: 200, // Ajusta la altura según tus necesidades
+              width: 160, // Ajusta el ancho según tus necesidades
+              height: 240, // Ajusta la altura según tus necesidades
               fit: BoxFit.cover,
             ),
           );

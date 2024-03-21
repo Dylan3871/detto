@@ -28,7 +28,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-<<<<<<< HEAD
       - assets/images/fotografia.png
       - assets/images/codigoqr.png
       - assets/images/Detto.mp4
@@ -39,17 +38,8 @@ flutter:
       - assets/images/cli4.png
       - assets/images/cli5.png
       - assets/images/cli6.png
-      - assets/images/cli7.png
-      - assets/images/cli8.png
-  #   - images/a_dot_ham.jpeg
-=======
-    - assets/images/fotografia.png
-    - assets/images/codigoqr.png
-    - assets/images/Detto.mp4
-    - assets/images/detto.png
   fonts:
     - family: detto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
->>>>>>> bb1cb1d45ed61b98b74875ad9d745d27ab99b49e
 
