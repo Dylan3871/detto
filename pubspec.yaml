@@ -16,6 +16,7 @@ dependencies:
   path_provider: ^2.0.14
   image_picker: ^0.8.4+3
   pdf: ^3.4.0
+  intl: ^0.17.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -37,7 +38,7 @@ flutter:
       - assets/images/cli3.png
       - assets/images/cli4.png
       - assets/images/cli5.png
-      - assets/images/cli6.png
+      - assets/images/cli6.png    
   fonts:
     - family: detto
       fonts:

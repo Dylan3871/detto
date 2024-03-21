@@ -291,35 +291,35 @@ class _PaginaCatalogoState extends State<Paginacatalogo> {
             ),
     );
   }
-void _toggleFavorite(int productId) async {
-  bool? isFavorite = await _favoritoDao.isFavorite(productId);
-  if (isFavorite != null) {
-    if (isFavorite) {
-      await _favoritoDao.removeFromFavorites(productId);
+
+  void _toggleFavorite(int productId) async {
+    bool? isFavorite = await _favoritoDao.isFavorite(productId);
+    if (isFavorite != null) {
+      if (isFavorite) {
+        await _favoritoDao.removeFromFavorites(productId);
+      } else {
+        // Obtener el producto correspondiente a productId
+        final product = _products.firstWhere((element) => element.id == productId);
+
+        // Crear un objeto Favorito con la información del producto
+        final favorito = Favorito(
+          fotos: product.fotos!,
+          nombrePrenda: product.nombrePrenda!,
+          costoini: product.costoini!,
+          codigod: product.codigod!,
+        );
+
+        // Agregar el producto a la tabla favorito
+        await _favoritoDao.addToFavorites(favorito);
+      }
+      setState(() {
+        // Actualizar el estado para reflejar el cambio en favoritos
+      });
     } else {
-      // Obtener el producto correspondiente a productId
-      final product = _products.firstWhere((element) => element.id == productId);
-
-      // Crear un objeto Favorito con la información del producto
-      final favorito = Favorito(
-        fotos: product.fotos!,
-        nombrePrenda: product.nombrePrenda!,
-        costoini: product.costoini!,
-        codigod: product.codigod!,
-      );
-
-      // Agregar el producto a la tabla favorito
-      await _favoritoDao.addToFavorites(favorito);
+      // Manejar el caso en que el valor devuelto sea nulo
+      // Por ejemplo, mostrar un mensaje de error o tomar otra acción
     }
-    setState(() {
-      // Actualizar el estado para reflejar el cambio en favoritos
-    });
-  } else {
-    // Manejar el caso en que el valor devuelto sea nulo
-    // Por ejemplo, mostrar un mensaje de error o tomar otra acción
   }
-}
-
 }
 
 class ProductCard extends StatelessWidget {
@@ -353,7 +353,7 @@ class ProductCard extends StatelessWidget {
                   child: Image.file(
                     File(product.fotos ?? ''),
                     fit: BoxFit.cover,
-                    height: 150,
+                    height: MediaQuery.of(context).size.width * 0.5, // Ajuste de altura relativa a la pantalla
                   ),
                 ),
                 IconButton(
