@@ -61,7 +61,8 @@ class _PaginaresultadosState extends State<Paginaresultados> {
                 child: Text('No hay resultados disponibles'),
               );
             } else {
-              return _construirListaDeResultados(context, resultados);
+              final groupedResults = _groupResultsByNombre(resultados);
+              return _construirListaDeResultados(context, groupedResults);
             }
           }
         },
@@ -69,41 +70,53 @@ class _PaginaresultadosState extends State<Paginaresultados> {
     );
   }
 
-  Widget _construirListaDeResultados(BuildContext context, List<Resultado> resultados) {
+  Map<String, List<Resultado>> _groupResultsByNombre(List<Resultado> resultados) {
+    Map<String, List<Resultado>> groupedResults = {};
+    resultados.forEach((resultado) {
+      if (!groupedResults.containsKey(resultado.nombre)) {
+        groupedResults[resultado.nombre] = [];
+      }
+      groupedResults[resultado.nombre]!.add(resultado);
+    });
+    return groupedResults;
+  }
+
+  Widget _construirListaDeResultados(BuildContext context, Map<String, List<Resultado>> groupedResults) {
     return ListView.builder(
-      itemCount: resultados.length,
+      itemCount: groupedResults.length,
       itemBuilder: (context, index) {
-        final resultado = resultados[index];
+        final nombre = groupedResults.keys.elementAt(index);
+        final resultados = groupedResults[nombre]!;
         return Card(
-          margin: const EdgeInsets.all(8), // Utilizar const para mejorar el rendimiento
+          margin: const EdgeInsets.all(8),
           child: ExpansionTile(
             title: Row(
               children: [
                 Text(
-                  resultado.nombre,
+                  nombre,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: Icon(Icons.picture_as_pdf),
                   onPressed: () {
-                    _eliminarResultados(context, resultado.nombre);
+                    _generarPDF(context, resultados, nombre);
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.picture_as_pdf),
+                  icon: Icon(Icons.delete),
                   onPressed: () {
-                    _generarPDF(context, [resultado], resultado.nombre);
+                    _eliminarResultados(context, nombre);
                   },
                 ),
               ],
             ),
-            children: [
-              ListTile(
+            children: resultados.map((resultado) {
+              return ListTile(
                 title: Text(resultado.pregunta),
                 subtitle: Text('Respuesta: ${resultado.respuesta}'),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         );
       },
@@ -146,8 +159,7 @@ class _PaginaresultadosState extends State<Paginaresultados> {
           pdfLib.Paragraph(
             text: 'Nombre de la empresa: $nombreEmpresa',
           ),
-          pdfLib.SizedBox(height: 20), // Espacio entre los elementos
-          // Detalles de las preguntas y respuestas
+          pdfLib.SizedBox(height: 20),
           pdfLib.Table.fromTextArray(
             border: pdfLib.TableBorder.all(),
             headerStyle: pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold),
@@ -164,7 +176,6 @@ class _PaginaresultadosState extends State<Paginaresultados> {
       ),
     );
 
-    // Guardar el PDF
     final directory = await getExternalStorageDirectory();
     final pdfFile = File('${directory!.path}/preguntas_$nombreEmpresa.pdf');
     await pdfFile.writeAsBytes(await pdf.save());

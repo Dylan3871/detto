@@ -41,7 +41,7 @@ class _PaginaPreguntasState extends State<Paginapreguntas> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preguntas Iniciales'),
+        title: Text('Preguntas'),
       ),
       body: _buildBody(),
     );
