@@ -19,6 +19,8 @@ class UsuariosModel {
     required this.cargo,
   });
 
+  get nombre => null;
+
   UsuariosModel copyWith({
     int? id,
     String? name,

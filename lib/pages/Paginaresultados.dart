@@ -24,7 +24,7 @@ class Paginaresultados extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados'),
+        title: Text('Respuestas Peguntas Iniciales'),
       ),
       body: FutureBuilder<List<Resultado>>(
         future: _obtenerRespuestas(),
