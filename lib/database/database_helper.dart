@@ -167,7 +167,20 @@ class DatabaseHelper {
 
   deleteResultado(Resultado resultado) {}
 
-  deleteResultadosPorNombre(String nombre) {}
+  Future<void> deleteResultadosPorNombre(String nombre) async {
+  try {
+    final db = await _databaseHelper!.db;
+    await db.delete(
+      'resultados',
+      where: 'nombre = ?',
+      whereArgs: [nombre],
+    );
+  } catch (e) {
+    print('Error al eliminar los resultados por nombre: $e');
+    throw Exception('Error al eliminar los resultados por nombre: $e');
+  }
+}
+
 
   // Elimina este método, ya que no se está utilizando
   // void getAllResultados() {}

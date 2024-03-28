@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:detto/database/database_helper.dart';
 import 'package:detto/models/resultados_model.dart';
+import 'package:pdf/widgets.dart' as pdfLib;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 
-class Paginaresultados extends StatelessWidget {
+class Paginaresultados extends StatefulWidget {
+  @override
+  _PaginaresultadosState createState() => _PaginaresultadosState();
+}
+
+class _PaginaresultadosState extends State<Paginaresultados> {
+  late Future<List<Resultado>> _respuestasFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _respuestasFuture = _obtenerRespuestas();
+  }
+
   Future<List<Resultado>> _obtenerRespuestas() async {
     try {
       final db = DatabaseHelper.instance;
@@ -24,10 +41,10 @@ class Paginaresultados extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Respuestas Peguntas Iniciales'),
+        title: Text('Respuestas Preguntas Iniciales'),
       ),
       body: FutureBuilder<List<Resultado>>(
-        future: _obtenerRespuestas(),
+        future: _respuestasFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -53,51 +70,44 @@ class Paginaresultados extends StatelessWidget {
   }
 
   Widget _construirListaDeResultados(BuildContext context, List<Resultado> resultados) {
-    final groupedResults = _groupResultsByNombre(resultados);
     return ListView.builder(
-      itemCount: groupedResults.length,
+      itemCount: resultados.length,
       itemBuilder: (context, index) {
-        final nombre = groupedResults.keys.elementAt(index);
-        final preguntas = groupedResults[nombre]!;
+        final resultado = resultados[index];
         return Card(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8), // Utilizar const para mejorar el rendimiento
           child: ExpansionTile(
             title: Row(
               children: [
                 Text(
-                  nombre,
+                  resultado.nombre,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
                 IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
-                    _eliminarResultados(context, nombre);
+                    _eliminarResultados(context, resultado.nombre);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.picture_as_pdf),
+                  onPressed: () {
+                    _generarPDF(context, [resultado], resultado.nombre);
                   },
                 ),
               ],
             ),
-            children: preguntas.map((pregunta) {
-              return ListTile(
-                title: Text(pregunta.pregunta),
-                subtitle: Text('Respuesta: ${pregunta.respuesta}'),
-              );
-            }).toList(),
+            children: [
+              ListTile(
+                title: Text(resultado.pregunta),
+                subtitle: Text('Respuesta: ${resultado.respuesta}'),
+              ),
+            ],
           ),
         );
       },
     );
-  }
-
-  Map<String, List<Resultado>> _groupResultsByNombre(List<Resultado> resultados) {
-    final Map<String, List<Resultado>> groupedResults = {};
-    for (final resultado in resultados) {
-      if (!groupedResults.containsKey(resultado.nombre)) {
-        groupedResults[resultado.nombre] = [];
-      }
-      groupedResults[resultado.nombre]!.add(resultado);
-    }
-    return groupedResults;
   }
 
   void _eliminarResultados(BuildContext context, String nombre) async {
@@ -109,7 +119,10 @@ class Paginaresultados extends StatelessWidget {
           content: Text('Resultados eliminados'),
         ),
       );
-      // No es necesario actualizar la lista de resultados aquí, ya que la lista se actualizará automáticamente al regresar a la página anterior
+      setState(() {
+        // Actualizar la lista de resultados después de eliminar
+        _respuestasFuture = _obtenerRespuestas();
+      });
     } catch (e) {
       print('Error al eliminar los resultados: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,5 +131,48 @@ class Paginaresultados extends StatelessWidget {
         ),
       );
     }
+  }
+
+  void _generarPDF(BuildContext context, List<Resultado> preguntas, String nombreEmpresa) async {
+    final pdf = pdfLib.Document();
+
+    pdf.addPage(
+      pdfLib.MultiPage(
+        build: (context) => [
+          pdfLib.Header(level: 0, text: 'Preguntas y Respuestas'),
+          pdfLib.Paragraph(
+            text: 'Fecha de generación: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+          ),
+          pdfLib.Paragraph(
+            text: 'Nombre de la empresa: $nombreEmpresa',
+          ),
+          pdfLib.SizedBox(height: 20), // Espacio entre los elementos
+          // Detalles de las preguntas y respuestas
+          pdfLib.Table.fromTextArray(
+            border: pdfLib.TableBorder.all(),
+            headerStyle: pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold),
+            cellAlignment: pdfLib.Alignment.center,
+            data: <List<dynamic>>[
+              ['Pregunta', 'Respuesta'],
+              ...preguntas.map((pregunta) => [
+                pregunta.pregunta,
+                pregunta.respuesta,
+              ]),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    // Guardar el PDF
+    final directory = await getExternalStorageDirectory();
+    final pdfFile = File('${directory!.path}/preguntas_$nombreEmpresa.pdf');
+    await pdfFile.writeAsBytes(await pdf.save());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('PDF generado y guardado correctamente'),
+      ),
+    );
   }
 }
