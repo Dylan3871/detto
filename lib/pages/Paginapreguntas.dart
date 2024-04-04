@@ -26,16 +26,15 @@ class _PaginaPreguntasState extends State<Paginapreguntas> {
   }
 
   void _cargarPreguntas() async {
-  try {
-    final preguntas = await _preguntasDao.getAllPreguntas();
-    setState(() {
-      _preguntas = preguntas;
-    });
-  } catch (e) {
-    print('Error al cargar las preguntas: $e');
+    try {
+      final preguntas = await _preguntasDao.getAllPreguntas();
+      setState(() {
+        _preguntas = preguntas;
+      });
+    } catch (e) {
+      print('Error al cargar las preguntas: $e');
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -174,50 +173,59 @@ class _PaginaPreguntasState extends State<Paginapreguntas> {
   }
 
   Widget _buildContestarPreguntas() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: _preguntas.map((pregunta) {
-      return Card(
-        margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              title: Text(pregunta.pregunta),
-            ),
-            if (pregunta.opciones.isNotEmpty)
-              ...pregunta.opciones.map((opcion) {
-                return RadioListTile<String>(
-                  title: Text(opcion),
-                  value: opcion,
-                  groupValue: pregunta.respuestaUsuario,
-                  onChanged: (String? value) {
-                    setState(() {
-                      pregunta.respuestaUsuario = value;
-                    });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _preguntas.map((pregunta) {
+        return Card(
+          margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: Text(pregunta.pregunta),
+              ),
+              if (pregunta.opciones.isNotEmpty)
+                ...pregunta.opciones.map((opcion) {
+                  return RadioListTile<String>(
+                    title: Text(opcion),
+                    value: opcion,
+                    groupValue: pregunta.respuestaUsuario,
+                    onChanged: (String? value) {
+                      setState(() {
+                        pregunta.respuestaUsuario = value;
+                      });
+                    },
+                  );
+                }).toList(),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Escribe aquí tu respuesta',
+                  ),
+                  onChanged: (value) {
+                    pregunta.respuestaUsuario = value;
                   },
-                );
-              }).toList(),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _eliminarPregunta(pregunta);
-                  },
-                  child: Text('Eliminar'),
                 ),
-              ],
-            ),
-            Divider(),
-          ],
-        ),
-      );
-    }).toList(),
-  );
-}
-
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _eliminarPregunta(pregunta);
+                    },
+                    child: Text('Eliminar Pregunta'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
 
   void _agregarOpcion() {
     setState(() {
@@ -229,19 +237,18 @@ class _PaginaPreguntasState extends State<Paginapreguntas> {
   }
 
   void _guardarPregunta() async {
-  String preguntaText = _preguntaController.text;
+    String preguntaText = _preguntaController.text;
 
-  Pregunta nuevaPregunta = Pregunta(
-    pregunta: preguntaText,
-    opciones: _opciones,
-    opcionMultiple: _opcionMultiple, // Utilizamos la misma variable para indicar si es de opción múltiple o no
-  );
+    Pregunta nuevaPregunta = Pregunta(
+      pregunta: preguntaText,
+      opciones: _opciones,
+      opcionMultiple: _opcionMultiple,
+    );
 
-  await _preguntasDao.insertPregunta(nuevaPregunta);
-  _limpiarFormulario();
-  _cargarPreguntas();
-}
-
+    await _preguntasDao.insertPregunta(nuevaPregunta);
+    _limpiarFormulario();
+    _cargarPreguntas();
+  }
 
   void _eliminarPregunta(Pregunta pregunta) async {
     await _preguntasDao.deletePregunta(pregunta);
@@ -319,3 +326,4 @@ class _PaginaPreguntasState extends State<Paginapreguntas> {
     }
   }
 }
+
